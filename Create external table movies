@@ -1,0 +1,57 @@
+Create external table movies(
+director_name string,
+duration string,
+actor_2_name string,
+genres string,
+actor_1_name string,
+movie_title string,
+num_voted_users string,
+actor_3_name string,
+movie_imdb_link string,
+num_user_for_reviews string,
+language string,
+country string,
+title_year string,
+imdb_score string)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+location '/Dados';
+
+CREATE EXTERNAL TABLE olist_cleansed_db.geolocation_external_tb 
+(
+    geolocation_city  string,
+    geolocation_street string,
+    geolocation_state  string
+ )
+ PARTITIONED BY ( geolocation_zip_code_prefix string)
+ ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+ LOCATION '/datalake/olist/cleansed/geolocation_external_tb';
+ 
+LOAD DATA INPATH '/datalake/olist/raw/csv/geolocation_cep_correios.csv'
+OVERWRITE INTO TABLE geolocation_tb;
+
+CREATE EXTERNAL TABLE olist_cleansed_db.geolocation_tb 
+(
+    geolocation_city  string,
+    geolocation_state string,
+    geolocation_street string,
+    geolocation_zip_code_prefix string
+ )
+ ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+ LINES TERMINATED BY '\n'
+ tblproperties("skip.header.line.count"="1");
+ 
+ 
+Acesso WebUI dos Frameworks
+
+    HDFS http://localhost:50070
+    Presto http://localhost:8080
+    Hbase http://localhost:16010/master-status
+    Mongo Express http://localhost:8081
+    Kafka Manager http://localhost:9000
+    Metabase http://localhost:3000
+    Nifi http://localhost:9090
+    Jupyter Spark http://localhost:8889
+    Hue http://localhost:8888
+    Spark http://localhost:4040
+
