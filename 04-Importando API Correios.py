@@ -259,7 +259,7 @@ get_ipython().system(' hadoop fs -ls /datalake/olist/raw/csv')
 get_ipython().system(' hdfs dfs -cat /datalake/olist/raw/csv/geolocation_cep_correios.csv')
 
 
-# In[9]:
+# In[6]:
 
 
 schema = StructType()       .add("geolocation_city",StringType(),True)       .add("geolocation_state",StringType(),True)       .add("geolocation_street",StringType(),True)       .add("geo_zip_code_prefix",StringType(),True) 
@@ -268,7 +268,7 @@ schema = StructType()       .add("geolocation_city",StringType(),True)       .ad
 geolocation_correios_df = spark.read.option("header",True)                        .option("delimiter",",")                        .schema(schema)                        .csv("hdfs://namenode:8020/datalake/olist/raw/csv/geolocation_cep_correios.csv")
 
 
-# In[10]:
+# In[7]:
 
 
 geolocation_correios_df.show()
@@ -318,7 +318,7 @@ geoclocation_cep_distinct_df.count()
 get_ipython().system(' pip install geopy')
 
 
-# In[23]:
+# In[8]:
 
 
 import time
@@ -345,13 +345,13 @@ def getCepByLatLon(row):
     return rowDict
 
 
-# In[18]:
+# In[9]:
 
 
 geolocation_valid_df = geolocation_correios_df.select("*").where(col("geo_zip_code_prefix")!="geolocation_zip_code_prefix")
 
 
-# In[19]:
+# In[10]:
 
 
 geolocation_valid_df.cache()
@@ -363,7 +363,7 @@ geolocation_valid_df.cache()
 geolocation_valid_df.count()
 
 
-# In[21]:
+# In[11]:
 
 
 geolocation_valid_df = geolocation_valid_df.select("*").where(col("geolocation_street").isNotNull())
@@ -371,25 +371,26 @@ geolocation_valid_df = geolocation_valid_df.select("*").where(col("geolocation_s
 geolocation_valid_df.show()
 
 
-# In[22]:
+# In[12]:
 
 
 geolocation_valid_rows = geolocation_valid_df.collect()
 
 
-# In[24]:
+# In[16]:
 
 
 geolocation_latlon_address = [
         getCepByLatLon(row)
         for row in geolocation_valid_rows
      ]
+
+
+# OBS: O código funcionou, porém, por algum motivo que não identifiquei a conexão com a geoPy esta falhando.
+
+# In[15]:
+
+
 geolocation_latlon_address_df = spark.createDataFrame(geolocation_latlon_address)
 geolocation_latlon_address_df.show()
-
-
-# In[ ]:
-
-
-geolocation_latlon_adress.show()
 
